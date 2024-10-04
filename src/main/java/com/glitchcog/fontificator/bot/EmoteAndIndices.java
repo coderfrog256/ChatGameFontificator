@@ -10,7 +10,7 @@ public class EmoteAndIndices
     /**
      * The emote ID of the Twitch emote, from prepended IRC tags that are received with each Twitch post
      */
-    private final Integer emoteId;
+    private final String emoteId;
 
     /**
      * The starting index in the message of the keyword of this emote
@@ -33,7 +33,7 @@ public class EmoteAndIndices
      *            that represents the emote, which is 1 less than it should be for a Java substring, which is why it is
      *            set with +1.
      */
-    public EmoteAndIndices(Integer setId, int begin, int twitchEndIndex)
+    public EmoteAndIndices(String setId, int begin, int twitchEndIndex)
     {
         this.emoteId = setId;
         this.begin = begin;
@@ -45,7 +45,7 @@ public class EmoteAndIndices
      * 
      * @return emoteId
      */
-    public Integer getEmoteId()
+    public String getEmoteId()
     {
         return emoteId;
     }

@@ -416,7 +416,7 @@ public class ChatViewerBot extends PircBot
                 for (String eaiStr : emotesStr.split("/"))
                 {
                     String[] idIndexSplit = eaiStr.split(":");
-                    Integer emoteId = "null".equals(idIndexSplit[0]) ? null : Integer.parseInt(idIndexSplit[0]);
+                    String emoteId = "null".equals(idIndexSplit[0]) ? null : idIndexSplit[0];
                     final String indices = idIndexSplit[1];
                     String[] indicesStr = indices.split(",");
                     for (int i = 0; i < indicesStr.length; i++)

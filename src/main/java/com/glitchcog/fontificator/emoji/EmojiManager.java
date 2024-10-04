@@ -147,12 +147,12 @@ public class EmojiManager
      * @return
      * @throws MalformedURLException
      */
-    public LazyLoadEmoji putEmojiById(Integer emojiId, String word, ConfigEmoji emojiConfig) throws MalformedURLException
+    public LazyLoadEmoji putEmojiById(String emojiId, String word, ConfigEmoji emojiConfig) throws MalformedURLException
     {
         logger.trace("Loading unmapped emote from emote ID " + emojiId);
-        final String emoteUrl = EmojiApiLoader.getTwitchEmoteV1Url(emojiId);
+        final String emoteUrl = EmojiApiLoader.getTwitchEmoteV2Url(emojiId);
         LazyLoadEmoji emoji = new LazyLoadEmoji(word, emoteUrl, EmojiType.TWITCH_V1);
-        emojiById.put(Integer.toString(emojiId), emoji);
+        emojiById.put(emojiId, emoji);
         return emoji;
     }
 
@@ -165,7 +165,7 @@ public class EmojiManager
      * @param emojiConfig
      * @return
      */
-    public LazyLoadEmoji getEmojiById(Integer emojiId, String word, ConfigEmoji emojiConfig)
+    public LazyLoadEmoji getEmojiById(String emojiId, String word, ConfigEmoji emojiConfig)
     {
         if (emojiConfig != null && emojiConfig.isTwitchEnabled() && emojiConfig.isFfzEnabled() && FFZ_REPLACEMENT_EMOTE_URLS.keySet().contains(emojiId))
         {
@@ -183,7 +183,7 @@ public class EmojiManager
                 catch (MalformedURLException e)
                 {
                     logger.error(e.toString(), e);
-                    return emojiById.get(Integer.toString(emojiId));
+                    return emojiById.get(emojiId);
                 }
             }
             else
@@ -193,7 +193,7 @@ public class EmojiManager
         }
         else if (emojiConfig != null && emojiConfig.isTwitchEnabled())
         {
-            return emojiById.get(Integer.toString(emojiId));
+            return emojiById.get(emojiId);
         }
         else
         {
@@ -201,9 +201,9 @@ public class EmojiManager
         }
     }
 
-    private static String getFfzReplacementKey(Integer emojiId)
+    private static String getFfzReplacementKey(String emojiId)
     {
-        return "FfzRep" + Integer.toString(emojiId);
+        return "FfzRep" + emojiId;
     }
 
     public void setFfzBadgeUsers(Map<Integer, Set<String>> ffzBadgeUsers)
