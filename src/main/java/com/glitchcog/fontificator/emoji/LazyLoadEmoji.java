@@ -28,6 +28,13 @@ import org.apache.log4j.Logger;
  */
 public class LazyLoadEmoji
 {
+    public enum LookupResult
+    {
+        SUCCESS,
+        SUCCESS_GIF,
+        FAILURE
+    }
+
     private static final Logger logger = Logger.getLogger(LazyLoadEmoji.class);
 
     /**
@@ -108,7 +115,7 @@ public class LazyLoadEmoji
 
     public void cacheImage()
     {
-        getImage(isAnimatedGif());
+        getImage(true);
     }
 
     /**
@@ -125,10 +132,15 @@ public class LazyLoadEmoji
         // Lazy load the still image whether or not the emoji is animated
         if (image == null)
         {
-            if (!checkUrl(url))
+            LookupResult result = checkUrl(url);
+            if (result == LookupResult.FAILURE)
             {
                 BUSTED_URLS.add(url.toString());
                 return null;
+            }
+            else if (result == LookupResult.SUCCESS_GIF)
+            {
+                animatedGif = true;
             }
 
             try
@@ -283,7 +295,7 @@ public class LazyLoadEmoji
         return replaces;
     }
 
-    public static boolean checkUrl(URL url)
+    public static LookupResult checkUrl(URL url)
     {
         try
         {
@@ -292,12 +304,21 @@ public class LazyLoadEmoji
             httpURLConnection.setRequestMethod("HEAD");
             httpURLConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US; rv:1.9.1.2) Gecko/20090729 Firefox/3.5.2 (.NET CLR 3.5.30729)");
             int responseCode = httpURLConnection.getResponseCode();
-            return responseCode == HttpURLConnection.HTTP_OK;
+            if(responseCode != HttpURLConnection.HTTP_OK)
+            {
+                return LookupResult.FAILURE;
+            }
+            String contentType = httpURLConnection.getContentType();
+            if (contentType != null && contentType.contains("image/gif"))
+            {
+                return LookupResult.SUCCESS_GIF;
+            }
+            return LookupResult.SUCCESS;
         }
         catch (Exception e)
         {
             logger.debug(e.getMessage(), e);
-            return false;
+            return LookupResult.FAILURE;
         }
     }
 }
