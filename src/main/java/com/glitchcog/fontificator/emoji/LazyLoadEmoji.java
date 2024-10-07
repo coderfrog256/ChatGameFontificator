@@ -182,18 +182,10 @@ public class LazyLoadEmoji
         // Only lazy load the animated GIF image if the image is an animatedGif type
         if (animatedGif && animatedGifImage == null)
         {
-            // BTTV emote (ditto) gets special care
-            if ("(ditto)".equals(identifier))
-            {
-                Dimension dim = new Dimension();
-                animatedGifImage = AnimatedGifUtil.loadDittoAnimatedGif(url, dim);
-                this.width = (int) dim.getWidth();
-                this.height = (int) dim.getHeight();
-            }
-            else
-            {
-                animatedGifImage = AnimatedGifUtil.loadAnimatedGif(url);
-            }
+            Dimension dim = new Dimension();
+            animatedGifImage = AnimatedGifUtil.loadAnimatedGif(url, dim);
+            this.width = (int) dim.getWidth();
+            this.height = (int) dim.getHeight();
         }
 
         // Return the animated GIF image only if animated is requested AND this emoji is an animated GIF

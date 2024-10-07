@@ -1,7 +1,6 @@
 package com.glitchcog.fontificator.emoji;
 
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
@@ -39,7 +38,7 @@ public class AnimatedGifUtil
 
     public static final String ATTRIBUTE_DISPOSAL_METHOD = "disposalMethod";
 
-    public static final int MIN_ANI_GIF_DELAY = 10;
+    public static final int MIN_ANI_GIF_DELAY = 1;
 
     public static final String DISPOSE_NONE = "none";
     public static final String DISPOSE_UNSPECIFIED = "undefinedDisposalMethod4";
@@ -52,13 +51,8 @@ public class AnimatedGifUtil
     public static final String IMAGE_WIDTH = "imageWidth";
     public static final String IMAGE_HEIGHT = "imageHeight";
 
-    public static Image loadAnimatedGif(final URL url)
-    {
-        return new ImageIcon(url).getImage();
-    }
-
     /**
-     * Fix (ditto) for Java's animated GIF interpretation
+     * Fix for Java's animated GIF interpretation
      * 
      * Adapted from http://stackoverflow.com/questions/26801433/fix-frame-rate-of-animated-gif-in-java#answer-26829534
      * 
@@ -69,7 +63,7 @@ public class AnimatedGifUtil
      * @return The loaded animated GIF
      * @throws Exception
      */
-    public static Image loadDittoAnimatedGif(final URL url, Dimension dim)
+    public static Image loadAnimatedGif(final URL url, Dimension dim)
     {
         final Image dimImage = new ImageIcon(url).getImage();
 
@@ -122,12 +116,7 @@ public class AnimatedGifUtil
                 IIOMetadata metadata = writer.getDefaultImageMetadata(new ImageTypeSpecifier(frame), null);
                 metadata.setFromTree(metadata.getNativeMetadataFormatName(), nodes);
 
-                // This modified frame is necessary to get the correct image placement, width, and height in the final GIF
-                BufferedImage frameMod = new BufferedImage(imgWidth, imgHeight, BufferedImage.TYPE_INT_ARGB);
-                Graphics big = frameMod.getGraphics();
-                big.drawImage(frame, 0, 0, null);
-
-                IIOImage fixedFrame = new IIOImage(frameMod, null, metadata);
+                IIOImage fixedFrame = new IIOImage(frame, null, metadata);
                 writer.writeToSequence(fixedFrame, writer.getDefaultWriteParam());
             }
             writer.endWriteSequence();
